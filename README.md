@@ -8,7 +8,7 @@ This action game was in Meiji University Festival of 2022.
 
 Players slash "Ichigen"(1st period of school) physically, using Nintendo Switch controller Joy-Con.
 
-## This Project is include these paid assets.(Removed paid assets from this repository.)
+## This Project is include these assets.
 [JoyconLib](https://github.com/Looking-Glass/JoyconLib) ver 06 released 2018.2
 
 ## Unity version
