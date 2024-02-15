@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public Ranking ranking;
 
     public bool ButtonDown_A = false;
-    private bool PlayTutorial = false;
+    private bool _isPlaytutorial = false;
 
     public BGMManager bgmManager;
     public ScoreManager scoreManager;
@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
             yield return StartCoroutine(bgmManager.StopBGM());
 
             //�`���[�g���A�����I�������ꍇ
-            if (PlayTutorial)
+            if (_isPlaytutorial)
             {
                 yield return StartCoroutine(bgmManager.PlayGaming(1));
                 yield return StartCoroutine(tutorial_explain.Generate());
@@ -120,8 +120,8 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator SetTutorial(int select_mode)
     {
-        if (select_mode == 1) PlayTutorial = true;
-        if (select_mode == 2) PlayTutorial = false;
+        if (select_mode == 1) _isPlaytutorial = true;
+        if (select_mode == 2) _isPlaytutorial = false;
         yield return 0;
     }
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
-using System.Linq;
 
 public class SlashManager : MonoBehaviour
 {
@@ -26,11 +25,6 @@ public class SlashManager : MonoBehaviour
     private Joycon m_joyconL;
     private Joycon m_joyconR;
     
-    /*
-    private static readonly Joycon.Button[] m_buttons = Enum.GetValues(typeof(Joycon.Button)) as Joycon.Button[];
-    private Joycon.Button? m_pressedButtonL;
-    private Joycon.Button? m_pressedButtonR;
-    */
     private bool canUseJoycon = true;
 
 
@@ -46,7 +40,9 @@ public class SlashManager : MonoBehaviour
     public AudioSource audioSource_slash;
     public AudioSource audioSource_slash_NonHit;
 
-    // Start is called before the first frame update
+    // 入力
+    private InputManager _input = InputManager.Instance;
+
     void Start()
     {
         SetControllers();
@@ -65,20 +61,16 @@ public class SlashManager : MonoBehaviour
         if (videoPlayer.isPlaying) return;
 
         //キーボード入力できるようにする
-        if (Input.GetKeyDown(KeyCode.LeftArrow))slash(0);
-        if (Input.GetKeyDown(KeyCode.DownArrow))slash(90);
-        if (Input.GetKeyDown(KeyCode.RightArrow))slash(180);
-        if (Input.GetKeyDown(KeyCode.UpArrow))slash(270);
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && Input.GetKeyDown(KeyCode.DownArrow))slash(30);
-        if (Input.GetKeyDown(KeyCode.RightArrow) && Input.GetKeyDown(KeyCode.DownArrow))slash(150);
-        if (Input.GetKeyDown(KeyCode.RightArrow) && Input.GetKeyDown(KeyCode.UpArrow))slash(210);
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && Input.GetKeyDown(KeyCode.UpArrow))slash(330);
+        if (_input.IsInputLeft())slash(0);
+        if (_input.IsInputDown())slash(90);
+        if (_input.IsInputRight())slash(180);
+        if (_input.IsInputUp())slash(270);
 
-        if (Input.GetKeyDown(KeyCode.PageUp)) slash(30);
-        if (Input.GetKeyDown(KeyCode.Home)) slash(150);
-        if (Input.GetKeyDown(KeyCode.End)) slash(210);
-        if (Input.GetKeyDown(KeyCode.PageDown)) slash(330);
-
+        // 斜め
+        if (_input.IsInputDownLeft())slash(30);
+        if (_input.IsInputDownRight())slash(150);
+        if (_input.IsInputUpRight())slash(210);
+        if (_input.IsInputUpLeft())slash(330);
 
 
         //加速度の値を取得する
@@ -119,49 +111,7 @@ public class SlashManager : MonoBehaviour
 
             slash(theta);
         }
-
-        /*
-        //Aボタンの入力を受け取る
-        if (canUseJoycon)
-        {
-            var isLeft = m_joycons[0].isLeft;
-            var button = isLeft ? m_pressedButtonL : m_pressedButtonR;
-            Debug.Log(button);
-        }*/
     }
-
-    /*
-    private void OnGUI()
-    {
-        foreach (var joycon in m_joycons)
-        {
-            var isLeft = joycon.isLeft;
-            var name = isLeft ? "Joy-Con (L)" : "Joy-Con (R)";
-            var key = isLeft ? "Z キー" : "X キー";
-            //var button = isLeft ? m_pressedButtonL : m_pressedButtonR;
-            var stick = joycon.GetStick();
-            var gyro = joycon.GetGyro();
-            var accel = joycon.GetAccel();
-            var orientation = joycon.GetVector();
-
-            
-            GUILayout.BeginVertical(GUILayout.Width(480));
-            GUILayout.Label("ジャイロX：" + gyro.x);
-            GUILayout.Label("ジャイロY：" + gyro.y);
-            GUILayout.Label("ジャイロZ：" + gyro.z);
-            GUILayout.Label("加速度X：" + accel.x);
-            GUILayout.Label("加速度Y：" + accel.y);
-            GUILayout.Label("加速度Z：" + accel.z);
-            GUILayout.Label("傾きX：" + orientation.x);
-            GUILayout.Label("傾きY：" + orientation.y);
-            GUILayout.Label("傾きZ：" + orientation.z);
-            GUILayout.Label("傾きW：" + orientation.w);
-            GUILayout.EndVertical();
-        }
-        //GUILayout.EndHorizontal();
-    }
-    */
-
 
     private void slash(float angle)
     {
@@ -183,26 +133,17 @@ public class SlashManager : MonoBehaviour
         slashColliderCylinderTransform.localRotation = Quaternion.Euler(0, 0, angle + 90);
         videoPlayer.Play();
 
-
-        //Invoke("slashColliderActiveFalse", videoClipTime);
-
         //判定時間を短くして、空振りの際の効果音を鳴らすようにした。
-        //yield return new WaitForSeconds(videoClipTime);
         yield return new WaitForSeconds(0.02f);
 
         if (scoreCounter.isCollision == true)
         {
-            //Debug.Log("コンボ継続");
             scoreManager.AddComboCount();
-            //効果音を鳴らす
-            //audioSource_slash.Play();
         }
         else
         {
-            //Debug.Log("コンボ断絶");
             scoreManager.StopComboUp();
             //効果音を鳴らす
-            //audioSource_slash_NonHit.Play();
             audioSource_slash.Stop();
             audioSource_slash_NonHit.Play();
         }
