@@ -94,12 +94,6 @@ public class pattern_03_hai : MonoBehaviour
         yield return 0;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     //当たったときと、消えるときに麻雀牌がある位置に存在するかどうかのリストから削除する
     IEnumerator deleteAlreadyList()
     {
@@ -117,9 +111,6 @@ public class pattern_03_hai : MonoBehaviour
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.useGravity = true;
         rigidbody.AddForce(-transform.parent.forward * 30, ForceMode.Impulse);
-
-        // エフェクトの再生
-        EffectManager.Instance.PlayEffect(EffectManager.EffectType.Slash, this.transform.position);
 
         StartCoroutine(endProcessOfSlashed());
     }

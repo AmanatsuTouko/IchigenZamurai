@@ -19,9 +19,4 @@ public class Effect : MonoBehaviour
     {
         return !_particleSystem.isPlaying;
     }
-
-    public Transform GetTransform()
-    {
-        return this.transform;
-    }
 }

@@ -12,12 +12,6 @@ public class pattern_02_hai : MonoBehaviour
     private float moveRate = 15.0f;
     private float stopTime = 0.2f;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -56,9 +50,6 @@ public class pattern_02_hai : MonoBehaviour
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         rigidbody.useGravity = true;
         rigidbody.AddForce(-transform.forward * 30, ForceMode.Impulse);
-
-        // エフェクトの再生
-        EffectManager.Instance.PlayEffect(EffectManager.EffectType.Slash, this.transform.position);
 
         //update処理軽減のためスクリプトを無効にする
         enabled = false;

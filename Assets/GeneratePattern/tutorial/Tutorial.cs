@@ -136,7 +136,7 @@ public class Tutorial : MonoBehaviour
                 buttonADownTimes = 0;
             }
 
-            Debug.Log(buttonADownTimes);
+            // Debug.Log(buttonADownTimes);
 
             //•b”‚É‰‚¶‚Ä’·‰Ÿ‚µ‚ÌF‚ğ•Ï‚¦‚é
             if(buttonADownTimes == 1)

@@ -172,8 +172,15 @@ public class ScoreManager : MonoBehaviour
     //‰æ–Ê‚Ì“_–Å
     IEnumerator Flash()
     {
-        redFlash.color = new Color32((byte)255, (byte)0, (byte)0, (byte)40);
+        redFlash.color = new Color32((byte)255, (byte)0, (byte)0, (byte)100);
+        yield return new WaitForSeconds(0.125f);
+        
+        redFlash.color = new Color32((byte)255, (byte)0, (byte)0, (byte)0);
+        yield return new WaitForSeconds(0.05f);
+        
+        redFlash.color = new Color32((byte)255, (byte)0, (byte)0, (byte)50);
         yield return new WaitForSeconds(0.1f);
+        
         redFlash.color = new Color32((byte)255, (byte)0, (byte)0, (byte)0);
         yield return 0;
     }

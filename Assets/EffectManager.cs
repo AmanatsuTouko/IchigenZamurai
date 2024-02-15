@@ -30,57 +30,64 @@ public class EffectManager : MonoBehaviour
     // オブジェクトプールで指定したエフェクトを再生できるようにする
     public enum EffectType
     {
-        Slash // 通常の牌を斬ったとき
+        Slash,         // 通常の牌を斬ったとき
+        IncorrectSlash // 斬ってはいけない牌を斬ったとき
     }
 
     // 各オブジェクトプールにある各々のオブジェクトを管理する
-    public List<Effect> _effects;
-    // 
-    int _nextEffectIdx = 0;
+    public List<List<Effect>> _effects = new List<List<Effect>>();
+    // 各エフェクトプールの次の再生予定のエフェクトのインデックス
+    List<int> _nextEffectIdx = new List<int>();
 
     // 指定したエフェクトを指定した場所で再生する
     public void PlayEffect(EffectType effectType, Vector3 position)
     {
+        int i = (int)effectType;
+
         // 使えるエフェクトを探す
         int invalidCount = 0;
         while(true)
         {
-            if(_effects[_nextEffectIdx].CanPlay())
+            if(_effects[i][_nextEffectIdx[i]].CanPlay())
             {
                 break;
             }
 
             // 全てのエフェクトが再生中の時は何もしない
             invalidCount += 1;
-            if(invalidCount >= _effects.Count)
+            if(invalidCount >= _effectPoolCount)
             {
                 break;
             }
 
             // インクリメント
-            _nextEffectIdx += 1;
-            if(_nextEffectIdx >= _effects.Count)
+            _nextEffectIdx[i] += 1;
+            if(_nextEffectIdx[i] >= _effectPoolCount)
             {
-                _nextEffectIdx = 0;
+                _nextEffectIdx[i] = 0;
             }
         }
         // 座標の指定
-        _effects[_nextEffectIdx].transform.position = position;  
+        _effects[i][_nextEffectIdx[i]].transform.position = position;  
         // エフェクトの再生
-        _effects[_nextEffectIdx].Play();
+        _effects[i][_nextEffectIdx[i]].Play();
     }
 
+    // オブジェクトプールの初期化
     private void InitObjectPool()
     {
-         for(int j=0; j<EffectsVFX.Count; j++)
+        for(int i=0; i<EffectsVFX.Count; i++)
         {
-            // オブジェクトプールを生成する
-            for(int i=0; i<_effectPoolCount; i++)
+            _nextEffectIdx.Add(0);
+            _effects.Add(new List<Effect>());
+
+            for(int j=0; j<_effectPoolCount; j++)
             {
-                GameObject gameObject = Instantiate(EffectsVFX[j]);
+                GameObject gameObject = Instantiate(EffectsVFX[i]);
                 gameObject.transform.SetParent(this.transform);
+                gameObject.transform.position = new Vector3(0, -10, 0);
                 Effect effect = gameObject.GetComponent<Effect>();
-                _effects.Add(effect);
+                _effects[i].Add(effect);
             }
         }   
     }
