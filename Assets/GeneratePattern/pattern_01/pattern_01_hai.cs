@@ -50,6 +50,9 @@ public class pattern_01_hai : MonoBehaviour
         rigidbody.useGravity = true;
         rigidbody.AddForce(-transform.parent.forward * 30, ForceMode.Impulse);
 
+        // エフェクトの再生
+        EffectManager.Instance.PlayEffect(EffectManager.EffectType.Slash, this.transform.position);
+
         //update処理軽減のためスクリプトを無効にする
         enabled = false;
     }

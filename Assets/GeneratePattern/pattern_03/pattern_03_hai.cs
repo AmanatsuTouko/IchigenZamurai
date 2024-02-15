@@ -118,6 +118,9 @@ public class pattern_03_hai : MonoBehaviour
         rigidbody.useGravity = true;
         rigidbody.AddForce(-transform.parent.forward * 30, ForceMode.Impulse);
 
+        // エフェクトの再生
+        EffectManager.Instance.PlayEffect(EffectManager.EffectType.Slash, this.transform.position);
+
         StartCoroutine(endProcessOfSlashed());
     }
     IEnumerator endProcessOfSlashed()
