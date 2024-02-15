@@ -17,20 +17,20 @@ public class SlashManager : MonoBehaviour
     private float ACCEL_THRESHOLD = 5.0f;
 
     //斜めと真っすぐの入力角度の範囲
-    private float diagonalAngle = 27.5f;
-    private float straightAngle = 17.5f;
+    private float DIAGONAL_DEGREE = 27.5f;
+    private float STRAIGHT_DEGREE = 17.5f;
 
     //JoyCon
     private List<Joycon> m_joycons;
     private Joycon m_joyconL;
     private Joycon m_joyconR;
     
-    private bool canUseJoycon = true;
+    private bool _canUseJoyCon = true;
 
 
-    private bool GetPosState = false;
-    Vector2 StartSlashPos = new Vector2(0, 0);
-    Vector2 EndSlashPos = new Vector2(0, 0);
+    private bool _isSlashing = false;
+    Vector2 _slashPosStart = new Vector2(0, 0);
+    Vector2 _slashPosEnd = new Vector2(0, 0);
 
     //スコア処理
     public ScoreCounter scoreCounter;
@@ -40,9 +40,6 @@ public class SlashManager : MonoBehaviour
     public AudioSource audioSource_slash;
     public AudioSource audioSource_slash_NonHit;
 
-    // 入力
-    private InputManager _input = InputManager.Instance;
-
     void Start()
     {
         SetControllers();
@@ -50,8 +47,21 @@ public class SlashManager : MonoBehaviour
 
         //Joycon接続がない場合には起動しない
         if (m_joycons == null || m_joycons.Count <= 0) {
-            canUseJoycon = false;
+            _canUseJoyCon = false;
         }
+    }
+
+    // 斬る方向と入力すべき回転角の対応表
+    private class SlashAngle
+    {
+        public const float Left = 0;
+        public const float DownLeft = 30;
+        public const float Down = 90;
+        public const float DownRight = 150;
+        public const float Right = 180;
+        public const float UpRight = 210;
+        public const float Up = 270;
+        public const float UpLeft = 330;
     }
 
     // Update is called once per frame
@@ -61,21 +71,20 @@ public class SlashManager : MonoBehaviour
         if (videoPlayer.isPlaying) return;
 
         //キーボード入力できるようにする
-        if (_input.IsInputLeft())slash(0);
-        if (_input.IsInputDown())slash(90);
-        if (_input.IsInputRight())slash(180);
-        if (_input.IsInputUp())slash(270);
+        if (InputManager.Instance.IsInputLeft())Slash(SlashAngle.Left);
+        if (InputManager.Instance.IsInputDown())Slash(SlashAngle.Down);
+        if (InputManager.Instance.IsInputRight())Slash(SlashAngle.Right);
+        if (InputManager.Instance.IsInputUp())Slash(SlashAngle.Up);
 
         // 斜め
-        if (_input.IsInputDownLeft())slash(30);
-        if (_input.IsInputDownRight())slash(150);
-        if (_input.IsInputUpRight())slash(210);
-        if (_input.IsInputUpLeft())slash(330);
-
+        if (InputManager.Instance.IsInputDownLeft())Slash(SlashAngle.DownLeft);
+        if (InputManager.Instance.IsInputDownRight())Slash(SlashAngle.DownRight);
+        if (InputManager.Instance.IsInputUpRight())Slash(SlashAngle.UpRight);
+        if (InputManager.Instance.IsInputUpLeft())Slash(SlashAngle.UpLeft);
 
         //加速度の値を取得する
         Vector3 accel = new Vector3(0,0,0);
-        if (canUseJoycon)
+        if (_canUseJoyCon)
         {
             accel = m_joycons[0].GetGyro();
         }
@@ -83,37 +92,37 @@ public class SlashManager : MonoBehaviour
         //加速度が閾値を上回ったタイミングのPosを記録
         //加速度が閾値を下回ったタイミングのPosを記録
         //差分を求めて斬撃の角度とする
-        if(MathF.Abs(accel.z) > ACCEL_THRESHOLD && GetPosState == false)
+        if(MathF.Abs(accel.z) > ACCEL_THRESHOLD && _isSlashing == false)
         {
-            GetPosState = true;
-            StartSlashPos = pointerManager.pos;
+            _isSlashing = true;
+            _slashPosStart = pointerManager.pos;
         }
-        if(MathF.Abs(accel.z) < ACCEL_THRESHOLD && GetPosState == true)
+        if(MathF.Abs(accel.z) < ACCEL_THRESHOLD && _isSlashing == true)
         {
-            GetPosState = false;
-            EndSlashPos = pointerManager.pos;
+            _isSlashing = false;
+            _slashPosEnd = pointerManager.pos;
 
             //斬撃の発生
-            Vector2 subPos2 = EndSlashPos - StartSlashPos;
-            float theta = Mathf.Atan2(subPos2.y, subPos2.x) * Mathf.Rad2Deg;
-            theta += 180;
+            Vector2 subPos2 = _slashPosEnd - _slashPosStart;
+            float degree = Mathf.Atan2(subPos2.y, subPos2.x) * Mathf.Rad2Deg;
+            degree += 180;
 
             //角度を補正する
-            if (0 < theta && theta < straightAngle) theta = 0;
-            else if (straightAngle < theta && theta < straightAngle + diagonalAngle * 2) theta = 30;
-            else if (straightAngle + diagonalAngle * 2 < theta && theta < straightAngle * 3 + diagonalAngle * 2) theta = 90;
-            else if (straightAngle * 3 + diagonalAngle * 2 < theta && theta < straightAngle * 3 + diagonalAngle * 4) theta = 150;
-            else if (straightAngle * 3 + diagonalAngle * 4 < theta && theta < straightAngle * 5 + diagonalAngle * 4) theta = 180;
-            else if (straightAngle * 5 + diagonalAngle * 4 < theta && theta < straightAngle * 5 + diagonalAngle * 6) theta = 210;
-            else if (straightAngle * 5 + diagonalAngle * 6 < theta && theta < straightAngle * 7 + diagonalAngle * 6) theta = 270;
-            else if (straightAngle * 7 + diagonalAngle * 6 < theta && theta < straightAngle * 7 + diagonalAngle * 8) theta = 330;
-            else if (straightAngle * 7 + diagonalAngle * 8 < theta && theta < straightAngle * 9 + diagonalAngle * 8) theta = 0;
+            if (0 < degree && degree < STRAIGHT_DEGREE) degree = SlashAngle.Left;
+            else if (STRAIGHT_DEGREE < degree && degree < STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2) degree = SlashAngle.DownLeft;
+            else if (STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2) degree = SlashAngle.Down;
+            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4) degree = SlashAngle.DownRight;
+            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4) degree = SlashAngle.Right;
+            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6) degree = SlashAngle.UpRight;
+            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6) degree = SlashAngle.Up;
+            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8) degree = SlashAngle.UpLeft;
+            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8 < degree && degree < STRAIGHT_DEGREE * 9 + DIAGONAL_DEGREE * 8) degree = SlashAngle.Left;
 
-            slash(theta);
+            Slash(degree);
         }
     }
 
-    private void slash(float angle)
+    private void Slash(float angle)
     {
         //効果音を鳴らす
         audioSource_slash.Play();
