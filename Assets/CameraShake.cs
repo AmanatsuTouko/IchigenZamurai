@@ -22,6 +22,13 @@ public class CameraShake : MonoBehaviour
         var Ease = Easing.GetEasingMethod(Easing.Ease.OutExpo);
         // 振動する方向の取得
         var shakeDirVec = ShakeConstant.Vec[(int)shakeDirection];
+        
+        // 同じパターンの繰り返しに見えるので
+        // 揺れ幅に対して、若干の乱数を設定する
+        float random = Random.Range(0.7f, 1.0f);
+        // 揺れる方向に対しても、若干ずれるようにする
+        Vector2 randomNoizeVec = new Vector2(Random.Range(0.0f, 0.5f), Random.Range(0.0f, 0.5f));
+        shakeDirVec += randomNoizeVec;
 
         // 割合が0->1になるまで繰り返す
         float ratio = 0;
@@ -33,7 +40,7 @@ public class CameraShake : MonoBehaviour
             // 0～2PIの値に変換
             float rad = Mathf.Lerp(0, 2*Mathf.PI, ratio);
             // 横の揺れ幅
-            Vector2 shakedPos = shakeDirVec * (Mathf.Sin(rad) * _shakeWidth *  (1- Ease(ratio)));
+            Vector2 shakedPos = shakeDirVec * (Mathf.Sin(rad) * _shakeWidth *  (1- Ease(ratio))) * random;
 
             if(ratio >= 1.0f)
             {
