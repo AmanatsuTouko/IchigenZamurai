@@ -9451,6 +9451,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cc8c3b4cbd33bd349b53b1b383385980, type: 3}
   redFlash: {fileID: 1544239246}
   _cameraShake: {fileID: 2134724976}
+  _slashManager: {fileID: 2238827206663442318}
 --- !u!82 &1190676805
 AudioSource:
   m_ObjectHideFlags: 0

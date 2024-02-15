@@ -58,15 +58,15 @@ public class GameManager : MonoBehaviour
             ScoreWindowPlane.SetActive(true);
 
             //LEVEL1
-            yield return StartCoroutine(displayLevelText.Generate("レベル１"));
-            yield return StartCoroutine(bgmManager.PlayGaming(2));
-            yield return StartCoroutine(pattern_1.Generate());
-            yield return StartCoroutine(bgmManager.StopBGM());
+            // yield return StartCoroutine(displayLevelText.Generate("レベル１"));
+            // yield return StartCoroutine(bgmManager.PlayGaming(2));
+            // yield return StartCoroutine(pattern_1.Generate());
+            // yield return StartCoroutine(bgmManager.StopBGM());
 
-            yield return StartCoroutine(displayLevelText.Generate("レベル２"));
-            yield return StartCoroutine(bgmManager.PlayGaming(3));
-            yield return StartCoroutine(pattern_2.Generate());
-            yield return StartCoroutine(bgmManager.StopBGM());
+            // yield return StartCoroutine(displayLevelText.Generate("レベル２"));
+            // yield return StartCoroutine(bgmManager.PlayGaming(3));
+            // yield return StartCoroutine(pattern_2.Generate());
+            // yield return StartCoroutine(bgmManager.StopBGM());
 
             yield return StartCoroutine(displayLevelText.Generate("ファイナルレベル"));
             yield return StartCoroutine(bgmManager.PlayGaming(4));

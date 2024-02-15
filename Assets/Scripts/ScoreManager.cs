@@ -40,6 +40,9 @@ public class ScoreManager : MonoBehaviour
     // ƒJƒƒ‰U“®
     [SerializeField] CameraShake _cameraShake;
 
+    // Joy-Con‚ÌU“®
+    [SerializeField] SlashManager _slashManager;
+
     public void ResetParam()
     {
         Count_1gen = 0;
@@ -88,6 +91,9 @@ public class ScoreManager : MonoBehaviour
         if (haiType == HaiType.gen_1)
         {
             Count_1gen++;
+
+            // JoyCon‚ÌU“®
+            _slashManager.SetRumble(160, 320, 0.2f, 100);
         }
         // 1ŒÀˆÈŠO‚ğa‚Á‚½ê‡
         else
@@ -101,6 +107,9 @@ public class ScoreManager : MonoBehaviour
             StartCoroutine(Flash());
             // ’¼‘O‚ÉØ‚Á‚½•ûŒü‚ÉU“®‚³‚¹‚é
             _cameraShake.Shake(SlashManager.PreSlashDirection);
+
+            // JoyCon‚ÌU“®
+            _slashManager.SetRumble(160, 320, 1.0f, 200);
         }
         // 2ŒÀ‚ğa‚Á‚½ê‡
 
