@@ -40,13 +40,13 @@ public class GameManager : MonoBehaviour
 
             yield return StartCoroutine(bgmManager.StopBGM());
 
-            //�`���[�g���A�����I�������ꍇ
+            // チュートリアルを選択した場合
             if (_isPlaytutorial)
             {
                 yield return StartCoroutine(bgmManager.PlayGaming(1));
                 yield return StartCoroutine(tutorial_explain.Generate());
                 yield return StartCoroutine(bgmManager.StopBGM());
-                //�X�R�A�̒l�̃��Z�b�g
+                // スコア・コンボのリセット
                 yield return StartCoroutine(scoreManager.ResetParamCoroutine());
             }
 

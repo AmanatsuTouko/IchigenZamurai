@@ -51,19 +51,6 @@ public class SlashManager : MonoBehaviour
         }
     }
 
-    // 斬る方向と入力すべき回転角の対応表
-    private class SlashAngle
-    {
-        public const float Left = 0;
-        public const float DownLeft = 30;
-        public const float Down = 90;
-        public const float DownRight = 150;
-        public const float Right = 180;
-        public const float UpRight = 210;
-        public const float Up = 270;
-        public const float UpLeft = 330;
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -71,16 +58,16 @@ public class SlashManager : MonoBehaviour
         if (videoPlayer.isPlaying) return;
 
         //キーボード入力できるようにする
-        if (InputManager.Instance.IsInputLeft())Slash(SlashAngle.Left);
-        if (InputManager.Instance.IsInputDown())Slash(SlashAngle.Down);
-        if (InputManager.Instance.IsInputRight())Slash(SlashAngle.Right);
-        if (InputManager.Instance.IsInputUp())Slash(SlashAngle.Up);
+        if (InputManager.Instance.IsInputLeft())Slash(ShakeConstant.Direction.Left);
+        if (InputManager.Instance.IsInputDown())Slash(ShakeConstant.Direction.Down);
+        if (InputManager.Instance.IsInputRight())Slash(ShakeConstant.Direction.Right);
+        if (InputManager.Instance.IsInputUp())Slash(ShakeConstant.Direction.Up);
 
         // 斜め
-        if (InputManager.Instance.IsInputDownLeft())Slash(SlashAngle.DownLeft);
-        if (InputManager.Instance.IsInputDownRight())Slash(SlashAngle.DownRight);
-        if (InputManager.Instance.IsInputUpRight())Slash(SlashAngle.UpRight);
-        if (InputManager.Instance.IsInputUpLeft())Slash(SlashAngle.UpLeft);
+        if (InputManager.Instance.IsInputDownLeft())Slash(ShakeConstant.Direction.DownLeft);
+        if (InputManager.Instance.IsInputDownRight())Slash(ShakeConstant.Direction.DownRight);
+        if (InputManager.Instance.IsInputUpRight())Slash(ShakeConstant.Direction.UpRight);
+        if (InputManager.Instance.IsInputUpLeft())Slash(ShakeConstant.Direction.UpLeft);
 
         //加速度の値を取得する
         Vector3 accel = new Vector3(0,0,0);
@@ -107,32 +94,44 @@ public class SlashManager : MonoBehaviour
             float degree = Mathf.Atan2(subPos2.y, subPos2.x) * Mathf.Rad2Deg;
             degree += 180;
 
-            //角度を補正する
-            if (0 < degree && degree < STRAIGHT_DEGREE) degree = SlashAngle.Left;
-            else if (STRAIGHT_DEGREE < degree && degree < STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2) degree = SlashAngle.DownLeft;
-            else if (STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2) degree = SlashAngle.Down;
-            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4) degree = SlashAngle.DownRight;
-            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4) degree = SlashAngle.Right;
-            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6) degree = SlashAngle.UpRight;
-            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6) degree = SlashAngle.Up;
-            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8) degree = SlashAngle.UpLeft;
-            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8 < degree && degree < STRAIGHT_DEGREE * 9 + DIAGONAL_DEGREE * 8) degree = SlashAngle.Left;
+            // 斬撃の方向
+            ShakeConstant.Direction direction = ShakeConstant.Direction.Left;
 
-            Slash(degree);
+            //角度を補正する
+            if (0 < degree && degree < STRAIGHT_DEGREE) direction = ShakeConstant.Direction.Left;
+            else if (STRAIGHT_DEGREE < degree && degree < STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2) direction = ShakeConstant.Direction.DownLeft;
+            else if (STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2) direction = ShakeConstant.Direction.Down;
+            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4) direction = ShakeConstant.Direction.DownRight;
+            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4) direction = ShakeConstant.Direction.Right;
+            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6) direction = ShakeConstant.Direction.UpRight;
+            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6) direction = ShakeConstant.Direction.Up;
+            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8) direction = ShakeConstant.Direction.UpLeft;
+            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8 < degree && degree < STRAIGHT_DEGREE * 9 + DIAGONAL_DEGREE * 8) direction = ShakeConstant.Direction.Left;
+
+            Slash(direction);
         }
     }
 
-    private void Slash(float angle)
+    private void Slash(ShakeConstant.Direction direction)
     {
         //効果音を鳴らす
         audioSource_slash.Play();
 
-        StartCoroutine(SlashCoroutine(angle));
+        StartCoroutine(SlashCoroutine(direction));
     }
 
+    // 間違った牌を斬った際に、斬った方向に振動できるように、方向を保存しておく
+    // ScoreManagerから呼び出す
+    public static ShakeConstant.Direction PreSlashDirection;
+
     //一部処理を待機する必要があるのでコルーチンで
-    IEnumerator SlashCoroutine(float angle)
+    IEnumerator SlashCoroutine(ShakeConstant.Direction direction)
     {
+        // 直前に切った方向の保存
+        PreSlashDirection = direction;
+
+        float angle = ShakeConstant.SlashDegree[(int)direction];
+
         angle += 180;
         rawImageTransform.rotation = Quaternion.Euler(0, 0, angle);
 
@@ -145,10 +144,12 @@ public class SlashManager : MonoBehaviour
         //判定時間を短くして、空振りの際の効果音を鳴らすようにした。
         yield return new WaitForSeconds(0.02f);
 
+        // 何か切れたときはコンボを継続
         if (scoreCounter.isCollision == true)
         {
             scoreManager.AddComboCount();
         }
+        // それ以外はコンボ断絶
         else
         {
             scoreManager.StopComboUp();

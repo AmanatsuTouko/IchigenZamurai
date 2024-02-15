@@ -37,6 +37,9 @@ public class ScoreManager : MonoBehaviour
     //“_–Å
     public Image redFlash;
 
+    // ƒJƒƒ‰U“®
+    [SerializeField] CameraShake _cameraShake;
+
     public void ResetParam()
     {
         Count_1gen = 0;
@@ -81,24 +84,25 @@ public class ScoreManager : MonoBehaviour
 
     public void AddCount(HaiType haiType)
     {
+        // 1ŒÀ‚ğa‚Á‚½ê‡
         if (haiType == HaiType.gen_1)
         {
             Count_1gen++;
         }
-        else if (haiType == HaiType.gen_2)
+        // 1ŒÀˆÈŠO‚ğa‚Á‚½ê‡
+        else
         {
-            Count_2gen++;
+            if (haiType == HaiType.gen_2){ Count_2gen++; }
+            else if (haiType == HaiType.gen_3){ Count_3gen++; }
+            
+            // ”í’e‚Ì‰‰o
             audioSource.clip = audioClips[Random.Range(0, 2)];
             audioSource.Play();
             StartCoroutine(Flash());
+            // ’¼‘O‚ÉØ‚Á‚½•ûŒü‚ÉU“®‚³‚¹‚é
+            _cameraShake.Shake(SlashManager.PreSlashDirection);
         }
-        else if (haiType == HaiType.gen_3)
-        {
-            Count_3gen++;
-            audioSource.clip = audioClips[Random.Range(0, 2)];
-            audioSource.Play();
-            StartCoroutine(Flash());
-        }
+        // 2ŒÀ‚ğa‚Á‚½ê‡
 
         //Debug.Log(Count_1gen +" "+ Count_2gen + " " + Count_3gen);
         //Debug.Log(Count_1gen + "/" + Count_1gen_spawn + " " + Count_2gen + "/" + Count_2gen_spawn + " " + Count_3gen + "/" + Count_3gen_spawn);

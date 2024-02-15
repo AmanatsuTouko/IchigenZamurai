@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour
 
     public bool IsInputDown()
     {
-        return _input(KeyCode.DownArrow) || _input(KeyCode.S);
+        return _input(KeyCode.DownArrow) || _input(KeyCode.S) || _input(KeyCode.X);
     }
 
     // 斜め入力
