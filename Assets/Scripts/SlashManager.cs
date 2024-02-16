@@ -4,19 +4,21 @@ using UnityEngine.Video;
 
 public class SlashManager : MonoBehaviour
 {
+    // 斬撃エフェクト
     [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] RectTransform rawImageTransform;
     [SerializeField] GameObject slashColliderCylinder;
     [SerializeField] Transform slashColliderCylinderTransform;
 
-    //スコア処理
+    // スコア処理
     public ScoreCounter scoreCounter;
     public ScoreManager scoreManager;
 
-    //効果音
+    // 効果音
     public AudioSource audioSource_slash;
     public AudioSource audioSource_slash_NonHit;
 
+    // Joy-Conの斬撃方向の取得
     private InputJoyconManager _inputJoyconManager;
 
     void Awake()
@@ -26,21 +28,22 @@ public class SlashManager : MonoBehaviour
 
     void Update()
     {
-        //再生中は入力できないようにする
+        // 斬撃アニメーションの再生中は入力できないようにする
         if (videoPlayer.isPlaying) return;
 
-        //キーボード入力できるようにする
+        // キーボード入力できるようにする
+        // 上下左右
         if (InputManager.Instance.IsInputLeft())Slash(SlashConstant.Direction.Left);
         if (InputManager.Instance.IsInputDown())Slash(SlashConstant.Direction.Down);
         if (InputManager.Instance.IsInputRight())Slash(SlashConstant.Direction.Right);
         if (InputManager.Instance.IsInputUp())Slash(SlashConstant.Direction.Up);
-
         // 斜め
         if (InputManager.Instance.IsInputDownLeft())Slash(SlashConstant.Direction.DownLeft);
         if (InputManager.Instance.IsInputDownRight())Slash(SlashConstant.Direction.DownRight);
         if (InputManager.Instance.IsInputUpRight())Slash(SlashConstant.Direction.UpRight);
         if (InputManager.Instance.IsInputUpLeft())Slash(SlashConstant.Direction.UpLeft);
 
+        // Joy-Conの入力がある場合、斬撃の方向を取得する
         _inputJoyconManager.SlashUpdate();
         if(_inputJoyconManager.IsSlashed())
         {
@@ -102,10 +105,5 @@ public class SlashManager : MonoBehaviour
         //ScoreCounterの衝突発生の有無をオフにする
         scoreCounter.isCollision = false;
         yield return 0;
-    }
-
-    private void slashColliderActiveFalse()
-    {
-        slashColliderCylinder.SetActive(false);
     }
 }

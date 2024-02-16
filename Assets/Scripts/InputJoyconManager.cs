@@ -17,17 +17,28 @@ public class InputJoyconManager : MonoBehaviour
     // JoyConが使えるかどうか
     private bool _canUseJoyCon = true;
 
+    // ポインターの位置取得
+    public PointerManager pointerManager; 
+
     // 斬撃が発生したかを監視する変数
     private bool _isSlashing = false; // 斬撃中か
     Vector2 _slashPosStart;           // 斬撃の開始時のポインターの位置
     Vector2 _slashPosEnd;             // 斬撃の終了時のポインターの位置
 
-    public PointerManager pointerManager;
-    private float ACCEL_THRESHOLD = 5.0f;
+    // どの方向に斬ったか
+    private SlashConstant.Direction _slashDirect;
 
-    //斜めと真っすぐの入力角度の範囲
-    private float DIAGONAL_DEGREE = 27.5f;
-    private float STRAIGHT_DEGREE = 17.5f;
+    // このフレームで斬撃が行われたかどうか
+    private bool _isSlashedThisFrame = false;
+    
+    // 斬撃発生の為の加速度の閾値
+    private const float ACCEL_THRESHOLD_TO_SLASH = 5.0f;
+
+    // 入力の角度の範囲
+    // 斜め入力は人間の動作としてはやりにくいので、やや範囲を広めにとっておく
+    // 合わせて90度になるように
+    private const float CROSS_DEGREE_RANGE = 35.0f;    // 例：真横に対して上下17.5度ずつが有効範囲
+    private const float DIAGONAL_DEGREE_RANGE = 55.0f; // 例：斜めに対して上下27.5度ずつが有効範囲
 
 
     void Start()
@@ -46,12 +57,6 @@ public class InputJoyconManager : MonoBehaviour
         }
     }
     
-    // どの方向に斬ったか
-    private SlashConstant.Direction _slashDirect;
-
-    // このフレームで斬撃が行われたかどうか
-    private bool _isSlashedThisFrame = false;
-
     public bool IsSlashed()
     {
         return _isSlashedThisFrame;
@@ -79,13 +84,12 @@ public class InputJoyconManager : MonoBehaviour
         //加速度が閾値を上回ったタイミングのPosを記録
         //加速度が閾値を下回ったタイミングのPosを記録
         //差分を求めて斬撃の角度とする
-        if(Mathf.Abs(accel.z) > ACCEL_THRESHOLD && _isSlashing == false)
+        if(Mathf.Abs(accel.z) > ACCEL_THRESHOLD_TO_SLASH && _isSlashing == false)
         {
             _isSlashing = true;
             _slashPosStart = pointerManager.pos;
         }
-        
-        else if(Mathf.Abs(accel.z) < ACCEL_THRESHOLD && _isSlashing == true)
+        else if(Mathf.Abs(accel.z) < ACCEL_THRESHOLD_TO_SLASH && _isSlashing == true)
         {
             _isSlashing = false;
             _slashPosEnd = pointerManager.pos;
@@ -94,20 +98,61 @@ public class InputJoyconManager : MonoBehaviour
             _isSlashedThisFrame = true;
 
             // 斬撃の発生
-            Vector2 subPos2 = _slashPosEnd - _slashPosStart;
+            Vector2 subPos2 = _slashPosStart - _slashPosEnd;
             float degree = Mathf.Atan2(subPos2.y, subPos2.x) * Mathf.Rad2Deg;
-            degree += 180;
 
-            // 角度を補正する
-            if (0 < degree && degree < STRAIGHT_DEGREE) _slashDirect = SlashConstant.Direction.Left;
-            else if (STRAIGHT_DEGREE < degree && degree < STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2) _slashDirect = SlashConstant.Direction.DownLeft;
-            else if (STRAIGHT_DEGREE + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2) _slashDirect = SlashConstant.Direction.Down;
-            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 2 < degree && degree < STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4) _slashDirect = SlashConstant.Direction.DownRight;
-            else if (STRAIGHT_DEGREE * 3 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4) _slashDirect = SlashConstant.Direction.Right;
-            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 4 < degree && degree < STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6) _slashDirect = SlashConstant.Direction.UpRight;
-            else if (STRAIGHT_DEGREE * 5 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6) _slashDirect = SlashConstant.Direction.Up;
-            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 6 < degree && degree < STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8) _slashDirect = SlashConstant.Direction.UpLeft;
-            else if (STRAIGHT_DEGREE * 7 + DIAGONAL_DEGREE * 8 < degree && degree < STRAIGHT_DEGREE * 9 + DIAGONAL_DEGREE * 8) _slashDirect = SlashConstant.Direction.Left;
+            // 角度を8方向に補正する
+            // 得られる角度が反時計回りに 0～180度、-180度～-0度なので、準じて変換する
+            // 第一第二象限 0～180度
+            if(degree >= 0)
+            {
+                if(degree <= CROSS_DEGREE_RANGE/2)
+                {
+                    _slashDirect = SlashConstant.Direction.Left;
+                }
+                else if(degree <= CROSS_DEGREE_RANGE/2 + DIAGONAL_DEGREE_RANGE)
+                {
+                    _slashDirect = SlashConstant.Direction.DownLeft;
+                }
+                else if(degree <= CROSS_DEGREE_RANGE/2 + DIAGONAL_DEGREE_RANGE + CROSS_DEGREE_RANGE)
+                {
+                    _slashDirect = SlashConstant.Direction.Down;
+                }
+                else if(degree <= CROSS_DEGREE_RANGE/2 + DIAGONAL_DEGREE_RANGE * 2 + CROSS_DEGREE_RANGE)
+                {
+                    _slashDirect = SlashConstant.Direction.DownRight;
+                }
+                else
+                {
+                    _slashDirect = SlashConstant.Direction.Right;
+                }
+            }
+            // 第三第四象限 -0度～-180度
+            else
+            {
+                degree = Mathf.Abs(degree);
+
+                if(degree <= CROSS_DEGREE_RANGE/2)
+                {
+                    _slashDirect = SlashConstant.Direction.Left;
+                }
+                else if(degree <= CROSS_DEGREE_RANGE/2 + DIAGONAL_DEGREE_RANGE)
+                {
+                    _slashDirect = SlashConstant.Direction.UpLeft;
+                }
+                else if(degree <= CROSS_DEGREE_RANGE/2 + DIAGONAL_DEGREE_RANGE + CROSS_DEGREE_RANGE)
+                {
+                    _slashDirect = SlashConstant.Direction.Up;
+                }
+                else if(degree <= CROSS_DEGREE_RANGE/2 + DIAGONAL_DEGREE_RANGE * 2 + CROSS_DEGREE_RANGE)
+                {
+                    _slashDirect = SlashConstant.Direction.UpRight;
+                }
+                else
+                {
+                    _slashDirect = SlashConstant.Direction.Right;
+                }
+            }
         }
     }
 
