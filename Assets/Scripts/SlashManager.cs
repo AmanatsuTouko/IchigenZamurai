@@ -14,10 +14,6 @@ public class SlashManager : MonoBehaviour
     public ScoreCounter scoreCounter;
     public ScoreManager scoreManager;
 
-    // 効果音
-    public AudioSource audioSource_slash;
-    public AudioSource audioSource_slash_NonHit;
-
     // Joy-Conの斬撃方向の取得
     private InputJoyconManager _inputJoyconManager;
 
@@ -53,9 +49,6 @@ public class SlashManager : MonoBehaviour
 
     private void Slash(SlashConstant.Direction direction)
     {
-        //効果音を鳴らす
-        audioSource_slash.Play();
-
         StartCoroutine(SlashCoroutine(direction));
     }
 
@@ -80,6 +73,9 @@ public class SlashManager : MonoBehaviour
         slashColliderCylinderTransform.localRotation = Quaternion.Euler(0, 0, angle + 90);
         videoPlayer.Play();
 
+        // 効果音を鳴らす
+        SoundManager.Instance.Play(SoundManager.SE.Slash);
+
         //判定時間を短くして、空振りの際の効果音を鳴らすようにした。
         yield return new WaitForSeconds(0.02f);
 
@@ -92,9 +88,9 @@ public class SlashManager : MonoBehaviour
         else
         {
             scoreManager.StopComboUp();
-            //効果音を鳴らす
-            audioSource_slash.Stop();
-            audioSource_slash_NonHit.Play();
+            // 効果音を鳴らす
+            SoundManager.Instance.Stop(SoundManager.SE.Slash);
+            SoundManager.Instance.Play(SoundManager.SE.SlashNoHit);
         }
 
         slashColliderCylinder.SetActive(false);

@@ -11,8 +11,6 @@ public class EffectManager : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-
             // オブジェクトプールの生成
             InitObjectPool();
         }

@@ -30,10 +30,6 @@ public class ScoreManager : MonoBehaviour
     public int Count_2gen_spawn = 0;
     public int Count_3gen_spawn = 0;
 
-    //被弾ボイス
-    public AudioSource audioSource;
-    public List<AudioClip> audioClips;
-
     //点滅
     public Image redFlash;
 
@@ -101,13 +97,15 @@ public class ScoreManager : MonoBehaviour
             if (haiType == HaiType.gen_2){ Count_2gen++; }
             else if (haiType == HaiType.gen_3){ Count_3gen++; }
             
-            // 被弾の演出
-            audioSource.clip = audioClips[Random.Range(0, 2)];
-            audioSource.Play();
+            // 被弾ボイスの演出
+            int random = Random.Range(0, 2);
+            if (random == 0) SoundManager.Instance.Play(SoundManager.SE.VoiceDamageGu);
+            else if (random == 1) SoundManager.Instance.Play(SoundManager.SE.VoiceDamageGuaaa);
+
+            // 赤画面の点滅
             StartCoroutine(Flash());
             // 直前に切った方向に振動させる
             _cameraShake.Shake(SlashManager.PreSlashDirection);
-
             // JoyConの振動
             _inputJoyconManager.SetRumble(160, 320, 1.0f, 200);
         }
