@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // SlashManagerとCameraShakeで共通して、振った方向を扱えるようにする
-public static class ShakeConstant
+public static class SlashConstant
 {
     public enum Direction
     {

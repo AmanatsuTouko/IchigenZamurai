@@ -10,18 +10,18 @@ public class CameraShake : MonoBehaviour
     [SerializeField] float _shakeSec = 0.5f;
 
     // カメラの振動を行う
-    public void Shake(ShakeConstant.Direction shakeDirection)
+    public void Shake(SlashConstant.Direction shakeDirection)
     {
         StartCoroutine(ShakeCoroutine(shakeDirection));
     }
 
     // 方向を指定して、N秒かけて振動させる
-    IEnumerator ShakeCoroutine(ShakeConstant.Direction shakeDirection)
+    IEnumerator ShakeCoroutine(SlashConstant.Direction shakeDirection)
     {
         // 減衰振動にするためのイージング
         var Ease = Easing.GetEasingMethod(Easing.Ease.OutExpo);
         // 振動する方向の取得
-        var shakeDirVec = ShakeConstant.Vec[(int)shakeDirection];
+        var shakeDirVec = SlashConstant.Vec[(int)shakeDirection];
         
         // 同じパターンの繰り返しに見えるので
         // 揺れ幅に対して、若干の乱数を設定する

@@ -41,7 +41,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] CameraShake _cameraShake;
 
     // Joy-Con‚ÌU“®
-    [SerializeField] SlashManager _slashManager;
+    [SerializeField] InputJoyconManager _inputJoyconManager;
 
     public void ResetParam()
     {
@@ -93,7 +93,7 @@ public class ScoreManager : MonoBehaviour
             Count_1gen++;
 
             // JoyCon‚ÌU“®
-            _slashManager.SetRumble(160, 320, 0.2f, 100);
+            _inputJoyconManager.SetRumble(160, 320, 0.2f, 100);
         }
         // 1ŒÀˆÈŠO‚ğa‚Á‚½ê‡
         else
@@ -109,12 +109,8 @@ public class ScoreManager : MonoBehaviour
             _cameraShake.Shake(SlashManager.PreSlashDirection);
 
             // JoyCon‚ÌU“®
-            _slashManager.SetRumble(160, 320, 1.0f, 200);
+            _inputJoyconManager.SetRumble(160, 320, 1.0f, 200);
         }
-        // 2ŒÀ‚ğa‚Á‚½ê‡
-
-        //Debug.Log(Count_1gen +" "+ Count_2gen + " " + Count_3gen);
-        //Debug.Log(Count_1gen + "/" + Count_1gen_spawn + " " + Count_2gen + "/" + Count_2gen_spawn + " " + Count_3gen + "/" + Count_3gen_spawn);
     }
 
     public void AddCount_spawn(HaiType haiType)
@@ -122,8 +118,6 @@ public class ScoreManager : MonoBehaviour
         if (haiType == HaiType.gen_1) Count_1gen_spawn++;
         else if (haiType == HaiType.gen_2) Count_2gen_spawn++;
         else if (haiType == HaiType.gen_3) Count_3gen_spawn++;
-
-        //Debug.Log(Count_1gen + " " + Count_2gen + " " + Count_3gen);
     }
 
     public void AddComboCount()
@@ -192,17 +186,5 @@ public class ScoreManager : MonoBehaviour
         
         redFlash.color = new Color32((byte)255, (byte)0, (byte)0, (byte)0);
         yield return 0;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

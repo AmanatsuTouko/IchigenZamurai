@@ -154,7 +154,7 @@ RectTransform:
   - {fileID: 1184023873}
   - {fileID: 75306483}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5391,7 +5391,7 @@ Transform:
   - {fileID: 9088487}
   - {fileID: 382238145}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &675699347
 GameObject:
@@ -9451,7 +9451,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cc8c3b4cbd33bd349b53b1b383385980, type: 3}
   redFlash: {fileID: 1544239246}
   _cameraShake: {fileID: 2134724976}
-  _slashManager: {fileID: 2238827206663442318}
+  _inputJoyconManager: {fileID: 2238827206663442322}
 --- !u!82 &1190676805
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9963,7 +9963,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1238523361
 MonoBehaviour:
@@ -11125,7 +11125,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1367239598
 MonoBehaviour:
@@ -13215,7 +13215,7 @@ Transform:
   - {fileID: 2134724975}
   - {fileID: 1085130997}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 45.722, y: 156.274, z: -0.007}
 --- !u!1 &1613375701
 GameObject:
@@ -15495,7 +15495,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1826867186}
   m_Layer: 0
-  m_Name: ====Others
+  m_Name: ====Others====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15514,7 +15514,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1833559110
 GameObject:
@@ -15904,7 +15904,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1919723888
 GameObject:
@@ -18726,6 +18726,7 @@ GameObject:
   - component: {fileID: 2238827206663442313}
   - component: {fileID: 2238827206663442320}
   - component: {fileID: 2238827206663442321}
+  - component: {fileID: 2238827206663442322}
   m_Layer: 0
   m_Name: SlashManager
   m_TagString: Untagged
@@ -18749,8 +18750,6 @@ MonoBehaviour:
   rawImageTransform: {fileID: 6954834426124921320}
   slashColliderCylinder: {fileID: 4030608345783591300}
   slashColliderCylinderTransform: {fileID: 4030608345783591296}
-  videoClipTime: 0
-  pointerManager: {fileID: 7504864357094903633}
   scoreCounter: {fileID: 4030608345783591304}
   scoreManager: {fileID: 1190676804}
   audioSource_slash: {fileID: 2238827206663442320}
@@ -18963,6 +18962,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2238827206663442322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2238827206663442316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f405908eb40e7664d8ca537ccd468b1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointerManager: {fileID: 7504864357094903633}
 --- !u!328 &2238827208327934968
 VideoPlayer:
   m_ObjectHideFlags: 0
@@ -20638,7 +20650,7 @@ RectTransform:
   - {fileID: 6954834424848408388}
   - {fileID: 1544239245}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
