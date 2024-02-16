@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -25,7 +23,6 @@ public class GameManager : MonoBehaviour
     public GameObject ScoreWindow;
     public GameObject ScoreWindowPlane;
 
-    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(Generate());
@@ -50,26 +47,24 @@ public class GameManager : MonoBehaviour
                 yield return StartCoroutine(scoreManager.ResetParamCoroutine());
             }
 
-            //���ʑJ�ڃA�j���[�V�����̕\��
             yield return StartCoroutine(screenTransiton.Generate());
 
-            //�X�R�A�E�B���h�E�̕\��
             ScoreWindow.SetActive(true);
             ScoreWindowPlane.SetActive(true);
 
-            // //LEVEL 1
-            // yield return StartCoroutine(displayLevelText.Generate("レベル１"));
-            // yield return StartCoroutine(bgmManager.PlayGaming(2));
-            // yield return StartCoroutine(pattern_1.Generate());
-            // yield return StartCoroutine(bgmManager.StopBGM());
+            // LEVEL 1
+            yield return StartCoroutine(displayLevelText.Generate("レベル１"));
+            yield return StartCoroutine(bgmManager.PlayGaming(2));
+            yield return StartCoroutine(pattern_1.Generate());
+            yield return StartCoroutine(bgmManager.StopBGM());
 
-            // //LEVEL 2
-            // yield return StartCoroutine(displayLevelText.Generate("レベル２"));
-            // yield return StartCoroutine(bgmManager.PlayGaming(3));
-            // yield return StartCoroutine(pattern_2.Generate());
-            // yield return StartCoroutine(bgmManager.StopBGM());
+            // LEVEL 2
+            yield return StartCoroutine(displayLevelText.Generate("レベル２"));
+            yield return StartCoroutine(bgmManager.PlayGaming(3));
+            yield return StartCoroutine(pattern_2.Generate());
+            yield return StartCoroutine(bgmManager.StopBGM());
 
-            //LEVEL FINAL
+            // LEVEL FINAL
             yield return StartCoroutine(displayLevelText.Generate("ファイナルレベル"));
             yield return StartCoroutine(bgmManager.PlayGaming(4));
             yield return StartCoroutine(pattern_3.Generate());
@@ -77,32 +72,23 @@ public class GameManager : MonoBehaviour
 
             yield return StartCoroutine(displayLevelText.Generate("終了！"));
 
-
-            //�X�R�A�E�B���h�E�̔��\��
             ScoreWindow.SetActive(false);
             ScoreWindowPlane.SetActive(false);
 
-            //���ʑJ�ڃA�j���[�V�����̕\��
             yield return StartCoroutine(screenTransiton.Generate());
 
-            //���ʔ��\
             yield return StartCoroutine(result.Generate());
 
-            //�����L���O�̕\��
             yield return StartCoroutine(ranking.Generate());
 
-            //�S�p�����[�^�̃��Z�b�g
-            //�X�R�A�̒l�̃��Z�b�g
             yield return StartCoroutine(scoreManager.ResetParamCoroutine());
 
-            //�����v�I�u�W�F�N�g�̍폜
             yield return StartCoroutine(DestroyAllHais());
         }
 
         yield return 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))
@@ -110,12 +96,10 @@ public class GameManager : MonoBehaviour
             ButtonDown_A = true;
         }
 
-        //�V�[���̃����[�h
+        // Rボタンでゲームのリセットを行う
         if (Input.GetKeyDown(KeyCode.R))
         {
-            // ���݂�Scene���擾
             Scene loadScene = SceneManager.GetActiveScene();
-            // ���݂̃V�[�����ēǂݍ��݂���
             SceneManager.LoadScene(loadScene.name);
         }
     }
@@ -129,7 +113,6 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator DestroyAllHais()
     {
-        //gen1, gen2, gen3 �̃^�O���t�����I�u�W�F�N�g���폜����
         GameObject[] objects = GameObject.FindGameObjectsWithTag("gen1");
         foreach (GameObject ball in objects)
         {

@@ -25,10 +25,21 @@ public class SoundManager : MonoBehaviour
 
     public enum SE
     {
+        // Main Game
         Slash,
         SlashNoHit,
         VoiceDamageGu,
-        VoiceDamageGuaaa
+        VoiceDamageGuaaa,
+
+        // Display Level
+        DisplayLevel_Dodon,
+        DisplayLevel_Chaki,
+        DisplayLevel_Kakaxtu,
+        DisplayLevel_ChakiEnd,
+
+        // Result
+        Result_Pon,
+        Result_Explosion,
     }
 
     [SerializeField] List<AudioClip> _bgmAudioClips = new List<AudioClip>();

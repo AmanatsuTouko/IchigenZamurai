@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -9,24 +8,6 @@ public class DisplayLevelText : MonoBehaviour
     public GameObject textBase;
     public Image blackImg;
     public TextMeshProUGUI text;
-
-    //効果音を鳴らす
-    public AudioSource audioSource_1;
-    public AudioSource audioSource_2;
-    public AudioSource audioSource_3;
-    public AudioSource audioSource_4;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public IEnumerator Generate(string displayText)
     {
@@ -55,14 +36,21 @@ public class DisplayLevelText : MonoBehaviour
         }
 
         //効果音を鳴らす
-        if (displayText == "終了！") { audioSource_3.Play(); }
-        else { audioSource_1.Play(); }
-
-        yield return new WaitForSeconds(1.0f);
-
-        //効果音を鳴らす
-        if (displayText == "終了！") { audioSource_4.Play(); }
-        else { audioSource_2.Play(); }
+        float betweenSec = 1.0f;
+        // 終了音声
+        if(displayText == "終了！")
+        {
+            SoundManager.Instance.Play(SoundManager.SE.DisplayLevel_Kakaxtu);
+            yield return new WaitForSeconds(betweenSec);
+            SoundManager.Instance.Play(SoundManager.SE.DisplayLevel_ChakiEnd);
+        }
+        // 開始音声
+        else
+        {
+            SoundManager.Instance.Play(SoundManager.SE.DisplayLevel_Dodon);
+            yield return new WaitForSeconds(betweenSec);
+            SoundManager.Instance.Play(SoundManager.SE.DisplayLevel_Chaki);
+        }
 
         //徐々に薄くする
         while (true)

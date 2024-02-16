@@ -24,26 +24,11 @@ public class Result : MonoBehaviour
     public GameObject pressAToNext;
     public GameObject pressAToTitle;
 
-    public AudioSource audioSource_pon;
-    public AudioSource audioSource;
-
     //今回セーブする値
     //Rankingクラスで最初にセーブを行う
     public static int SCORE = 999;
     public static int MAX_COMBO = 999;
     public static int GPA = 999;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public IEnumerator Generate()
     {
@@ -59,15 +44,15 @@ public class Result : MonoBehaviour
 
         //値の代入
         yield return new WaitForSeconds(WaitTimes);
-        audioSource_pon.Play();
+        SoundManager.Instance.Play(SoundManager.SE.Result_Pon);
         result_texts[0].text = scoreManager.Count_1gen + "/" + scoreManager.Count_1gen_spawn + " 単位";
 
         yield return new WaitForSeconds(WaitTimes);
-        audioSource_pon.Play();
+        SoundManager.Instance.Play(SoundManager.SE.Result_Pon);
         result_texts[1].text = scoreManager.Count_2gen + "/" + scoreManager.Count_2gen_spawn + " 単位";
 
         yield return new WaitForSeconds(WaitTimes);
-        audioSource_pon.Play();
+        SoundManager.Instance.Play(SoundManager.SE.Result_Pon);
         result_texts[2].text = scoreManager.Count_3gen + "/" + scoreManager.Count_3gen_spawn + " 単位";
 
         //GPA
@@ -77,17 +62,17 @@ public class Result : MonoBehaviour
         int gpa_3 = (int)(gpa * 100);
         gpa = 4.0f - (float)gpa_3 / 100;
         yield return new WaitForSeconds(WaitTimes);
-        audioSource_pon.Play();
+        SoundManager.Instance.Play(SoundManager.SE.Result_Pon);
         result_texts[3].text = gpa.ToString("f2");
 
         //COMBO
         yield return new WaitForSeconds(WaitTimes);
-        audioSource_pon.Play();
+        SoundManager.Instance.Play(SoundManager.SE.Result_Pon);
         result_texts[4].text = scoreManager.comboMax.ToString();
 
         //SCORE
         yield return new WaitForSeconds(WaitTimes);
-        audioSource_pon.Play();
+        SoundManager.Instance.Play(SoundManager.SE.Result_Pon);
         result_texts[5].text = scoreManager.score.ToString();
 
         //仮保存
@@ -104,7 +89,7 @@ public class Result : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
 
         //効果音を鳴らす
-        audioSource.Play();
+        SoundManager.Instance.Play(SoundManager.SE.Result_Explosion);
 
         //pressAToNext.SetActive(false);
 
