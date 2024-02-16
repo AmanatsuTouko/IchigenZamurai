@@ -20,7 +20,11 @@ public class SoundManager : MonoBehaviour
 
     public enum BGM
     {
-        
+        Title,
+        Tutorial,
+        Level1,
+        Level2,
+        Level3,
     }
 
     public enum SE
@@ -42,13 +46,13 @@ public class SoundManager : MonoBehaviour
         Result_Explosion,
     }
 
+    // BGM用AudioClips
     [SerializeField] List<AudioClip> _bgmAudioClips = new List<AudioClip>();
-
+    // SE用AudioClips
     [SerializeField] List<AudioClip> _seAudioClips = new List<AudioClip>();
 
     // BGM用AudioSource
     private AudioSource _bgmAudioSource;
-
     // SE用AudioSource
     private List<AudioSource> _seAudioSources = new List<AudioSource>();
 
@@ -58,15 +62,33 @@ public class SoundManager : MonoBehaviour
         _seAudioSources[idx].Play();
     }
 
+    public void Play(BGM sound)
+    {
+        int idx = (int)sound;
+        _bgmAudioSource.clip = _bgmAudioClips[idx];
+        _bgmAudioSource.Play();
+    }
+    
     public void Stop(SE sound)
     {
         int idx = (int)sound;
         _seAudioSources[idx].Stop();
     }
 
+    public void StopBGM()
+    {
+        _bgmAudioSource.Stop();
+    }
+
     private void Init()
     {
-        // サウンド再生用オブジェクトの作成
+        // BGM再生用オブジェクトの再生
+        GameObject bgmObject = new GameObject();
+        bgmObject.transform.SetParent(this.gameObject.transform);
+        AudioSource bgmAudioSource = bgmObject.AddComponent<AudioSource>();
+        _bgmAudioSource = bgmAudioSource;
+
+        // SE再生用オブジェクトの作成
         for(int i=0; i<_seAudioClips.Count; i++)
         {
             GameObject gameObject = new GameObject();

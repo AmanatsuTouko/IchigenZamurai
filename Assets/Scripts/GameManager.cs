@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     public bool ButtonDown_A = false;
     private bool _isPlaytutorial = false;
 
-    public BGMManager bgmManager;
     public ScoreManager scoreManager;
     public GameObject ScoreWindow;
     public GameObject ScoreWindowPlane;
@@ -32,17 +31,18 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
-            yield return StartCoroutine(bgmManager.PlayTitle());
+            SoundManager.Instance.Play(SoundManager.SE.DisplayLevel_ChakiEnd);
+            SoundManager.Instance.Play(SoundManager.BGM.Title);
             yield return StartCoroutine(title.Generate());
 
-            yield return StartCoroutine(bgmManager.StopBGM());
+            SoundManager.Instance.StopBGM();
 
             // チュートリアルを選択した場合
             if (_isPlaytutorial)
             {
-                yield return StartCoroutine(bgmManager.PlayGaming(1));
+                SoundManager.Instance.Play(SoundManager.BGM.Tutorial);
                 yield return StartCoroutine(tutorial_explain.Generate());
-                yield return StartCoroutine(bgmManager.StopBGM());
+                SoundManager.Instance.StopBGM();
                 // スコア・コンボのリセット
                 yield return StartCoroutine(scoreManager.ResetParamCoroutine());
             }
@@ -54,21 +54,21 @@ public class GameManager : MonoBehaviour
 
             // LEVEL 1
             yield return StartCoroutine(displayLevelText.Generate("レベル１"));
-            yield return StartCoroutine(bgmManager.PlayGaming(2));
+            SoundManager.Instance.Play(SoundManager.BGM.Level1);
             yield return StartCoroutine(pattern_1.Generate());
-            yield return StartCoroutine(bgmManager.StopBGM());
+            SoundManager.Instance.StopBGM();
 
             // LEVEL 2
             yield return StartCoroutine(displayLevelText.Generate("レベル２"));
-            yield return StartCoroutine(bgmManager.PlayGaming(3));
+            SoundManager.Instance.Play(SoundManager.BGM.Level2);
             yield return StartCoroutine(pattern_2.Generate());
-            yield return StartCoroutine(bgmManager.StopBGM());
+            SoundManager.Instance.StopBGM();
 
             // LEVEL FINAL
             yield return StartCoroutine(displayLevelText.Generate("ファイナルレベル"));
-            yield return StartCoroutine(bgmManager.PlayGaming(4));
+            SoundManager.Instance.Play(SoundManager.BGM.Level3);
             yield return StartCoroutine(pattern_3.Generate());
-            yield return StartCoroutine(bgmManager.StopBGM());
+            SoundManager.Instance.StopBGM();
 
             yield return StartCoroutine(displayLevelText.Generate("終了！"));
 
@@ -77,12 +77,14 @@ public class GameManager : MonoBehaviour
 
             yield return StartCoroutine(screenTransiton.Generate());
 
+            // 結果表示
             yield return StartCoroutine(result.Generate());
 
+            // ランキングの表示
             yield return StartCoroutine(ranking.Generate());
 
+            // 各パラメータと牌オブジェクトの削除
             yield return StartCoroutine(scoreManager.ResetParamCoroutine());
-
             yield return StartCoroutine(DestroyAllHais());
         }
 
