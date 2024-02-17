@@ -30,7 +30,7 @@
 .vscode/
 
 
-/[Aa]ssets/RankingData/
+/Assets/RankingData/score.text
 
 # Gradle cache directory
 .gradle/
