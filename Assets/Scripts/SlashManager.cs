@@ -69,18 +69,20 @@ public class SlashManager : MonoBehaviour
 
         yield return StartCoroutine(ScoreCounterCollisionReset());
 
+        // 当たり判定用コライダーの表示
         slashColliderCylinder.SetActive(true);
         slashColliderCylinderTransform.localRotation = Quaternion.Euler(0, 0, angle + 90);
+        // 斬撃エフェクトの表示
         videoPlayer.Play();
 
         // 効果音を鳴らす
         SoundManager.Instance.Play(SoundManager.SE.Slash);
 
-        //判定時間を短くして、空振りの際の効果音を鳴らすようにした。
+        // 当たり判定が終了するのを待機する
         yield return new WaitForSeconds(0.02f);
 
-        // 何か切れたときはコンボを継続
-        if (scoreCounter.isCollision == true)
+        // 一限を斬れた時のみ、コンボを継続
+        if (scoreCounter.isCollision && scoreCounter.CountDontSlash == 0)
         {
             scoreManager.AddComboCount();
         }
@@ -88,11 +90,19 @@ public class SlashManager : MonoBehaviour
         else
         {
             scoreManager.StopComboUp();
-            // 効果音を鳴らす
+        }
+
+        // 何も切れなかったときは、空を切る音を鳴らす
+        if(!scoreCounter.isCollision)
+        {
             SoundManager.Instance.Stop(SoundManager.SE.Slash);
             SoundManager.Instance.Play(SoundManager.SE.SlashNoHit);
         }
 
+        // 一限以外を斬ったカウンターのリセット
+        scoreCounter.ResetCountDontSlash();
+
+        // 当たり判定用コライダーの非表示
         slashColliderCylinder.SetActive(false);
     }
 

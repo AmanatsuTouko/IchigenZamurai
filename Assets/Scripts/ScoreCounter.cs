@@ -6,6 +6,9 @@ public class ScoreCounter : MonoBehaviour
 
     public bool isCollision = false;
 
+    // 当たったオブジェクトに一限以外が含まれるかをカウントする
+    public int CountDontSlash = 0;
+
     private void OnTriggerEnter(Collider other)
     {
         //切れていればコンボ継続のために当たった判定を残す
@@ -21,11 +24,13 @@ public class ScoreCounter : MonoBehaviour
         {
             AddCount_AvoidTwiceCount(other, ScoreManager.HaiType.gen_2);
             EffectManager.Instance.PlayEffect(EffectManager.EffectType.IncorrectSlash, other.transform.position);
+            CountDontSlash += 1;
         }
         else if (other.gameObject.tag == "gen3")
         {
             AddCount_AvoidTwiceCount(other, ScoreManager.HaiType.gen_3);
             EffectManager.Instance.PlayEffect(EffectManager.EffectType.IncorrectSlash, other.transform.position);
+            CountDontSlash += 1;
         }
     }
 
@@ -42,5 +47,11 @@ public class ScoreCounter : MonoBehaviour
             other.GetComponent<IsSlashed>().isSlashed = true;
             scoreManager.AddCount(haiType);
         }
+    }
+
+    // 当たり判定のリセット
+    public void ResetCountDontSlash()
+    {
+        CountDontSlash = 0;
     }
 }

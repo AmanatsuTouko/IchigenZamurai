@@ -87,28 +87,36 @@ public class ScoreManager : MonoBehaviour
         if (haiType == HaiType.gen_1)
         {
             Count_1gen++;
-
-            // JoyCon‚ÌU“®
-            _inputJoyconManager.SetRumble(160, 320, 0.2f, 100);
+            DisplayHitEffects();
         }
         // 1ŒÀˆÈŠO‚ğa‚Á‚½ê‡
         else
         {
             if (haiType == HaiType.gen_2){ Count_2gen++; }
             else if (haiType == HaiType.gen_3){ Count_3gen++; }
-            
-            // ”í’eƒ{ƒCƒX‚Ì‰‰o
-            int random = Random.Range(0, 2);
-            if (random == 0) SoundManager.Instance.Play(SoundManager.SE.VoiceDamageGu);
-            else if (random == 1) SoundManager.Instance.Play(SoundManager.SE.VoiceDamageGuaaa);
-
-            // Ô‰æ–Ê‚Ì“_–Å
-            StartCoroutine(Flash());
-            // ’¼‘O‚ÉØ‚Á‚½•ûŒü‚ÉU“®‚³‚¹‚é
-            _cameraShake.Shake(SlashManager.PreSlashDirection);
-            // JoyCon‚ÌU“®
-            _inputJoyconManager.SetRumble(160, 320, 1.0f, 200);
+            DisplayDamageEffects();
         }
+    }
+
+    private void DisplayHitEffects()
+    {
+        // JoyCon‚ÌU“®
+        _inputJoyconManager.SetRumble(160, 320, 0.2f, 100);
+    }
+
+    private void DisplayDamageEffects()
+    {
+        // ”í’eƒ{ƒCƒX‚ÌÄ¶
+        int random = Random.Range(0, 2);
+        if (random == 0) SoundManager.Instance.Play(SoundManager.SE.VoiceDamageGu);
+        else if (random == 1) SoundManager.Instance.Play(SoundManager.SE.VoiceDamageGuaaa);
+
+        // Ô‰æ–Ê‚Ì“_–Å
+        StartCoroutine(Flash());
+        // ’¼‘O‚ÉØ‚Á‚½•ûŒü‚ÉU“®‚³‚¹‚é
+        _cameraShake.Shake(SlashManager.PreSlashDirection);
+        // JoyCon‚ÌU“®
+        _inputJoyconManager.SetRumble(160, 320, 1.0f, 200);
     }
 
     public void AddCount_spawn(HaiType haiType)

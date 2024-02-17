@@ -159,6 +159,12 @@ public class InputJoyconManager : MonoBehaviour
     // 振動
     public void SetRumble(float low_freq, float high_freq, float amp, int time)
     {
-        if(m_joycons[0] != null) m_joycons[0].SetRumble(low_freq, high_freq, amp, time);
+        // 接続できなかった場合は何もしない
+        if(!_canUseJoyCon) return;
+        
+        if(m_joycons[0] != null) 
+        {
+            m_joycons[0].SetRumble(low_freq, high_freq, amp, time);
+        }
     }
 }
