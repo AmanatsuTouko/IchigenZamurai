@@ -29,9 +29,6 @@
 # Visual Studio Code cache directory
 .vscode/
 
-
-/Assets/RankingData/score.text
-
 # Gradle cache directory
 .gradle/
 
